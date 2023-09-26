@@ -11,9 +11,6 @@ import {
     createTheme,
     ThemeProvider,
     InputAdornment,
-    SelectChangeEvent,
-    Select,
-    MenuItem,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginImage from '../images/about.jpg';
@@ -79,11 +76,6 @@ const Register = () => {
     const [userName, setUserName] = useState('');
     const [showPassword, setShowPassword] = useState(true);
     const [showConfirmPassword, setShowConfirmPassword] = useState(true)
-    const [age, setAge] = useState('');
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value);
-    };
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -225,19 +217,6 @@ const Register = () => {
                                     ),
                                 }}
                             />
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={age}
-                                label="Age"
-                                onChange={handleChange}
-                                fullWidth
-                                style={{marginTop:'10px'}}
-                            >
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
                             <Button type="submit" fullWidth variant="contained" style={styles.submit}>
                                 Sign Up
                             </Button>
