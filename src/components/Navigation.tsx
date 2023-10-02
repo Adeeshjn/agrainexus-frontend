@@ -95,7 +95,7 @@ const Navigation = () => {
                         {userName ? (
                             <>
                                 <li className="nav-item">
-                                    <Tooltip title="Account settings">
+                                    <Tooltip title="Account settings" arrow>
                                         <IconButton
                                             onClick={handleClick}
                                             size="medium"
@@ -111,15 +111,15 @@ const Navigation = () => {
                                         open={open}
                                         onClose={handleClose}
                                     >
-                                        <MenuItem>
+                                        <MenuItem style={{fontSize:'15px'}}>
                                             <AccountCircleIcon fontSize="medium" />
                                             Profile
                                         </MenuItem>
-                                        <MenuItem onClick={handleClose}>
+                                        <MenuItem style={{fontSize:'15px'}} onClick={handleClose}>
                                             <KeyIcon fontSize="medium"/>
                                             Change Password
                                         </MenuItem>
-                                        <MenuItem onClick={handleLogout}>
+                                        <MenuItem style={{fontSize:'15px'}} onClick={handleLogout}>
                                             <Logout fontSize="medium" />
                                             Logout
                                         </MenuItem>

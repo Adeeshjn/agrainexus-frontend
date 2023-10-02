@@ -147,6 +147,7 @@ const Register = () => {
 
     return (
         <ThemeProvider theme={customTheme}>
+            {/* <ToastContainer/> */}
             <div style={styles.root}>
                 <img
                     src={LoginImage} // Replace with the actual path to your image file
