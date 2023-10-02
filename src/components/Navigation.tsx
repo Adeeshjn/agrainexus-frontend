@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button } from '@mui/material';
+import { Avatar, Button, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import jwtDecode from 'jwt-decode';
+import { Logout } from "@mui/icons-material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import KeyIcon from '@mui/icons-material/Key';
 
 const Navigation = () => {
 
@@ -28,6 +31,15 @@ const Navigation = () => {
     const handleLogout = () => {
         localStorage.setItem('token', '');
         window.location.reload();
+    };
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
     };
 
     return (
@@ -81,18 +93,39 @@ const Navigation = () => {
                             </a>
                         </li>
                         {userName ? (
-                            <li className="nav-item">
-                                <a href="/" className="nav-link page-scroll">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        startIcon={<LoginIcon />}
-                                        onClick={handleLogout}
+                            <>
+                                <li className="nav-item">
+                                    <Tooltip title="Account settings">
+                                        <IconButton
+                                            onClick={handleClick}
+                                            size="medium"
+                                            aria-controls={open ? 'account-menu' : undefined}
+                                            aria-haspopup="true"
+                                            aria-expanded={open ? 'true' : undefined}
+                                        >
+                                            <Avatar sx={{color:'blue', bgcolor:'green'}}>{userName.charAt(0).toUpperCase()}</Avatar>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
                                     >
-                                        Logout
-                                    </Button>
-                                </a>
-                            </li>
+                                        <MenuItem>
+                                            <AccountCircleIcon fontSize="medium" />
+                                            Profile
+                                        </MenuItem>
+                                        <MenuItem onClick={handleClose}>
+                                            <KeyIcon fontSize="medium"/>
+                                            Change Password
+                                        </MenuItem>
+                                        <MenuItem onClick={handleLogout}>
+                                            <Logout fontSize="medium" />
+                                            Logout
+                                        </MenuItem>
+                                    </Menu>
+                                </li>
+                            </>
                         ) : (
                             <>
                                 <li className="nav-item">
