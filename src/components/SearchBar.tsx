@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchBar = () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Avatar,
     Button,
@@ -16,6 +16,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginImage from '../images/about.jpg'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { useNavigate } from 'react-router-dom';
+import { API_URLS } from '../constants/static';
+import postApi from '../api/PostApi';
+import { toast } from 'react-toastify';
 
 const customTheme: any = createTheme({
     palette: {
@@ -73,6 +77,20 @@ const Login = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const formRef: any = useRef(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        isLogin();
+    }, []);
+
+    const isLogin = () => {
+        let token = localStorage.getItem('token');
+        if (token) {
+            navigate('/');
+        }
+    }
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -86,92 +104,122 @@ const Login = () => {
         setPassword(e.target.value);
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Perform your login or sign-up logic here based on the 'isLogin' state
-            console.log('Login submitted:', userName, password);
-    };
+        if (formRef.current) {
+            const isFormValid = formRef.current.checkValidity();
+            if (isFormValid) {
+                let item = { userName: userName, password: password };
+                let body = {
+                    Url: API_URLS.login,
+                    body: item,
+                    isAuth: false
+                }
+                try {
+                    let response: any = await postApi(body, setIsLoading)
+                    if (response.data) {
+                        localStorage.setItem('token', response.data.token);
+                        navigate('/');
+                    }
+                }
+                catch (error: any) {
+                    toast.error(error, {
+                        position: toast.POSITION.TOP_CENTER
+                    });
+                } finally {
+                    setIsLoading(false); // Hide loader
+                }
 
-    return (
-        <ThemeProvider theme={customTheme}>
-            <div style={styles.root}>
-                <img
-                    src={LoginImage} // Replace with the actual path to your image file
-                    alt="LoginImage"
-                    style={styles.image}
-                />
-                <Container component="main" maxWidth="xs" style={styles.formContainer}>
-                    <CssBaseline />
-                    <div>
-                        <Avatar style={styles.avatar}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography style={{ textAlign: 'center', paddingTop: '5px', fontSize: '20px' }} component="h1" variant="h5">
-                            Sign in
-                        </Typography>
-                        <form style={styles.form} onSubmit={handleSubmit}>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="User Name"
-                                placeholder='User Name'
-                                name="username"
-                                autoComplete="username"
-                                value={userName}
-                                onChange={handleUserNameChange}
-                                InputProps={{
-                                    style: {
-                                        fontSize: '16px', // Set your desired font size here
-                                    },
-                                }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                placeholder='Password'
-                                type={showPassword ? 'password' : 'text'}
-                                id="password"
-                                autoComplete="current-password"
-                                value={password}
-                                onChange={handlePasswordChange}
-                                InputProps={{
-                                    style: {
-                                        fontSize: '16px', // Set your desired font size here
-                                    },
-                                    endAdornment: (
-                                        <InputAdornment style={{cursor:'pointer'}} position="end">
-                                            {showPassword ? (
-                                                <VisibilityIcon onClick={togglePasswordVisibility} />
-                                            ) : (
-                                                <VisibilityOffIcon onClick={togglePasswordVisibility} />
-                                            )}
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Button type="submit" fullWidth variant="contained" style={styles.submit}>
-                                Sign In
-                            </Button>
-                            <Grid container>
-                                <Grid item>
-                                    <Link href='/register' style={{cursor:'pointer', textDecoration:'none'}}>
-                                        Don't have an account? Sign Up
-                                    </Link>
-                                </Grid>
+            }
+
+        } else {
+            toast.error("Enter correct details", {
+                position: toast.POSITION.TOP_CENTER
+            });
+        }
+    }
+
+
+return (
+    <ThemeProvider theme={customTheme}>
+        <div style={styles.root}>
+            <img
+                src={LoginImage} // Replace with the actual path to your image file
+                alt="LoginImage"
+                style={styles.image}
+            />
+            <Container component="main" maxWidth="xs" style={styles.formContainer}>
+                <CssBaseline />
+                <div>
+                    <Avatar style={styles.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography style={{ textAlign: 'center', paddingTop: '5px', fontSize: '20px' }} component="h1" variant="h5">
+                        Sign in
+                    </Typography>
+                    <form ref={formRef} style={styles.form} onSubmit={handleSubmit}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="username"
+                            label="User Name"
+                            placeholder='User Name'
+                            name="username"
+                            autoComplete="username"
+                            value={userName}
+                            onChange={handleUserNameChange}
+                            InputProps={{
+                                style: {
+                                    fontSize: '16px', // Set your desired font size here
+                                },
+                            }}
+                        />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            placeholder='Password'
+                            type={showPassword ? 'password' : 'text'}
+                            id="password"
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                            InputProps={{
+                                style: {
+                                    fontSize: '16px', // Set your desired font size here
+                                },
+                                endAdornment: (
+                                    <InputAdornment style={{ cursor: 'pointer' }} position="end">
+                                        {showPassword ? (
+                                            <VisibilityIcon onClick={togglePasswordVisibility} />
+                                        ) : (
+                                            <VisibilityOffIcon onClick={togglePasswordVisibility} />
+                                        )}
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Button type="submit" fullWidth variant="contained" style={styles.submit}>
+                            Sign In
+                        </Button>
+                        <Grid container>
+                            <Grid item>
+                                <Link href='/register' style={{ cursor: 'pointer', textDecoration: 'none' }}>
+                                    Don't have an account? Sign Up
+                                </Link>
                             </Grid>
-                        </form>
-                    </div>
-                </Container>
-            </div>
-        </ThemeProvider>
-    );
+                        </Grid>
+                    </form>
+                </div>
+            </Container>
+        </div>
+    </ThemeProvider>
+);
 };
 
 export default Login;

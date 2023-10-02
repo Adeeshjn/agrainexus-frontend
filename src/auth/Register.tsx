@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     Avatar,
     Button,
@@ -16,6 +16,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginImage from '../images/about.jpg';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { useNavigate } from 'react-router-dom';
+import { API_URLS } from '../constants/static';
+import postApi from '../api/PostApi';
+import { toast } from 'react-toastify';
 
 const customTheme: any = createTheme({
     palette: {
@@ -76,6 +80,9 @@ const Register = () => {
     const [userName, setUserName] = useState('');
     const [showPassword, setShowPassword] = useState(true);
     const [showConfirmPassword, setShowConfirmPassword] = useState(true)
+    const [isLoading, setIsLoading] = useState(false);
+    const formRef: any = useRef(null);
+    const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -101,10 +108,41 @@ const Register = () => {
         setConfirmPassword(e.target.value);
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Perform your login or sign-up logic here based on the 'isLogin' state
-        console.log('Registration submitted:', userName, email, password, confirmPassword);
+        if(formRef.current) {
+            const isFormValid = formRef.current.checkValidity();
+            if(isFormValid) {
+                let item = { userName: userName, email: email, password: password }
+                let body = {
+                    Url: API_URLS.register,
+                    body: item,
+                    isAuth: false
+                }
+                try {
+                    let response: any = await postApi(body, setIsLoading)
+                    if(response.data) {
+                        toast.success("Registration successfull!", { 
+                            position: toast.POSITION.TOP_CENTER 
+                        })
+                        setTimeout(() => {
+                            navigate("/login");
+                          }, 5000);
+                    }
+                } catch (error: any) {
+                    toast.error(error, {
+                        position: toast.POSITION.TOP_CENTER
+                    });
+                } finally {
+                    setIsLoading(false)
+                }
+            }
+            else {
+                toast.error("Enter the details correctly", {
+                    position: toast.POSITION.TOP_CENTER
+                });
+            }
+        }
     };
 
     return (
@@ -124,7 +162,7 @@ const Register = () => {
                         <Typography style={{ textAlign: 'center', paddingTop: '5px', fontSize: '20px' }} component="h1" variant="h5">
                             Sign up
                         </Typography>
-                        <form style={styles.form} onSubmit={handleSubmit}>
+                        <form ref={formRef} style={styles.form} onSubmit={handleSubmit}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"

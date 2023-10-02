@@ -1,8 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
+import jwtDecode from 'jwt-decode';
 
 const Navigation = () => {
+
+    const [userName, setUserName] = useState('')
+
+    useEffect(() => {
+        getUserName();
+    }, []);
+
+    const getUserName = () => {
+        let token = localStorage.getItem("token");
+        if (token) {
+            try {
+                let decodedToken: any = jwtDecode(token);
+                setUserName(decodedToken.UserName);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                localStorage.setItem("token", "");
+                setUserName("");
+            }
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.setItem('token', '');
+        window.location.reload();
+    };
+
     return (
         <nav id="menu" className="navbar navbar-default navbar-fixed-top">
             <div className="container">
@@ -53,20 +80,45 @@ const Navigation = () => {
                                 Contact
                             </a>
                         </li>
-                        <li className="nav-item">
-                            <a href="/login" className="nav-link page-scroll">
-                                <Button variant="contained" color="primary" startIcon={<LoginIcon />}>
-                                    Login
-                                </Button>
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a href="/register" className="nav-link page-scroll">
-                                <Button variant="contained" color="primary" startIcon={<LoginIcon />}>
-                                    Register
-                                </Button>
-                            </a>
-                        </li>
+                        {userName ? (
+                            <li className="nav-item">
+                                <a href="/" className="nav-link page-scroll">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<LoginIcon />}
+                                        onClick={handleLogout}
+                                    >
+                                        Logout
+                                    </Button>
+                                </a>
+                            </li>
+                        ) : (
+                            <>
+                                <li className="nav-item">
+                                    <a href="/login" className="nav-link page-scroll">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            startIcon={<LoginIcon />}
+                                        >
+                                            Login
+                                        </Button>
+                                    </a>
+                                </li>
+                                <li className="nav-item">
+                                    <a href="/register" className="nav-link page-scroll">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            startIcon={<LoginIcon />}
+                                        >
+                                            Register
+                                        </Button>
+                                    </a>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </div>

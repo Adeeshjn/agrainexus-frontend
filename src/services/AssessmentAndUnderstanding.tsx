@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextField, Button, Paper, Grid, Typography, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import GrassIcon from '@mui/icons-material/Grass';
-import HeightIcon from '@mui/icons-material/Height';
+import { API_URLS } from "../constants/static";
+import postApi from "../api/PostApi";
+import { toast } from "react-toastify";
+import jwtDecode from "jwt-decode";
 
-// Define an interface for the state variables
 interface FarmData {
     location: string;
     crops: string[];
     areaValue: number;
     areaUnit: string;
+    userId: number;
 }
 
 const formContainerStyle = {
@@ -25,35 +28,77 @@ const buttonStyle = {
 const areaUnits = ["acres", "hectares", "square meters", "square feet", "square kilometers"];
 
 export default function AssessmentAndUnderstanding() {
-    // Use the FarmData interface for the state variable
+    const [isLoading, setIsLoading] = useState(false);
+    const formRef: any = useRef(null)
     const [farmData, setFarmData] = useState<FarmData>({
         location: "",
         crops: [],
         areaValue: 0,
-        areaUnit: "acres", // Default unit, you can set to an appropriate default
+        areaUnit: "acres",
+        userId: 0
     });
 
-    const handleAddFarm = () => {
-        // Concatenate areaValue and areaUnit into a single string
-        const farmLocation = `${farmData.location}`;
-        const areaInfo = `${farmData.areaValue} ${farmData.areaUnit}`;
+    let token: any = localStorage.getItem("token");
+    let decodedToken: any = jwtDecode(token);
 
-        console.log("Adding Farm:", {
-            location: farmLocation,
-            crops: farmData.crops, // No need to split, it's already an array
-            areaValue: areaInfo, // Set the area info as a single string
-        });
 
-        setFarmData({
-            location: "",
-            crops: [],
-            areaValue: 0,
-            areaUnit: "acres", // Reset to default unit after adding
-        });
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const currentLocation = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                    setFarmData({ ...farmData, location: currentLocation });
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by your browser.');
+        }
+    }, []);
+
+    const handleAddFarm = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const isFormValid = formRef.current.checkValidity();
+        if (isFormValid) {
+            const item = {
+                location: farmData.location,
+                crops: farmData.crops.join(','),
+                Area: farmData.areaValue.toString(),
+                areaUnit: farmData.areaUnit,
+                userId: decodedToken.Id
+            };
+            const body = {
+                Url: `${API_URLS.addFarm}`,
+                body: JSON.stringify(item),
+                isAuth: true,
+            };
+            try {
+                let response: any = await postApi(body, setIsLoading);
+                if (response.status === 200 || response.status === 201 || response.status === 204) {
+                    setFarmData({
+                        location: "",
+                        crops: [],
+                        areaValue: 0,
+                        areaUnit: "acres",
+                        userId: 0
+                    });
+                    toast.success("Farm Added Successfully", { position: toast.POSITION.TOP_CENTER });
+                } else {
+                    // Handle other response statuses or show an appropriate error message.
+                    toast.error("Farm Adding Failed", { position: toast.POSITION.TOP_CENTER });
+                }
+            } catch (error) {
+                console.error("Error adding farm:", error);
+                toast.error("Farm Adding Failed", { position: toast.POSITION.TOP_CENTER });
+            }
+        }
     };
 
     const handleAreaValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Ensure the input is a valid number
         const numericValue = parseFloat(e.target.value);
         if (!isNaN(numericValue)) {
             setFarmData({ ...farmData, areaValue: numericValue });
@@ -69,7 +114,7 @@ export default function AssessmentAndUnderstanding() {
             <Typography variant="h5" align="center" style={{ marginBottom: '5px' }}>
                 Farm Information
             </Typography>
-            <form>
+            <form ref={formRef} onSubmit={handleAddFarm}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
@@ -99,7 +144,8 @@ export default function AssessmentAndUnderstanding() {
                             multiline
                             variant="outlined"
                             value={farmData.crops.join('\n')}
-                            onChange={(e) => setFarmData({ ...farmData, crops: e.target.value.split('\n') })}
+                            onChange={(e) => setFarmData({ ...farmData, crops: e.target.value.split('\n').map(line => line.trim()) })} // Trim each line
+                            required // Add required attribute for validation
                             InputProps={{
                                 style: {
                                     fontSize: '16px',
@@ -151,7 +197,7 @@ export default function AssessmentAndUnderstanding() {
                             color="primary"
                             fullWidth
                             style={buttonStyle}
-                            onClick={handleAddFarm}
+                            type="submit"
                         >
                             Add Farm
                         </Button>
