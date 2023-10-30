@@ -4,5 +4,6 @@ export const frontEndUrl = process.env.REACT_APP_FRONTEND_URL
 export const API_URLS = {
     register: `${API_BASE_URL}User/Register`,
     login: `${API_BASE_URL}User/Login`,
-    addFarm: `${API_BASE_URL}Farm/AddFarm`
+    addFarm: `${API_BASE_URL}Farm/AddFarm`,
+    getFarmDetailsByUserId: `${API_BASE_URL}Farm/GetFarmDetailsByUserId`
 }

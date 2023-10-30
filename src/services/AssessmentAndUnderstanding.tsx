@@ -6,6 +6,8 @@ import { API_URLS } from "../constants/static";
 import postApi from "../api/PostApi";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
+import GetApi from "../api/GetApi";
+import Table from "../shared/Table";
 
 interface FarmData {
     location: string;
@@ -30,6 +32,10 @@ const areaUnits = ["acres", "hectares", "square meters", "square feet", "square 
 export default function AssessmentAndUnderstanding() {
     const [isLoading, setIsLoading] = useState(false);
     const formRef: any = useRef(null)
+    const [rowData, setRowData] = useState<any[]>([])
+    const [click, setClick] = useState('')
+    const [isUpdateFarmOpen, setIsUpdateFarmOpen] = useState(false);
+    const [page, setPage] = useState(0);
     const [farmData, setFarmData] = useState<FarmData>({
         location: "",
         crops: [],
@@ -37,6 +43,13 @@ export default function AssessmentAndUnderstanding() {
         areaUnit: "acres",
         userId: 0
     });
+
+    const tableHeader = [
+        { title: 'Location', type: 'text', prop: 'location', sort: false, filter: false, asc: false, des: false },
+        { title: 'Crops', type: 'text', prop: 'crops', sort: false, filter: false, asc: false, des: false },
+        { title: 'Area', type: 'text', prop: 'area', sort: false, filter: false, asc: false, des: false },
+        { title: 'Action', type: 'button', prop: 'button', sort: false, filter: false, asc: false, des: false }
+    ]
 
     let token: any = localStorage.getItem("token");
     let decodedToken: any = jwtDecode(token);
@@ -98,6 +111,20 @@ export default function AssessmentAndUnderstanding() {
         }
     };
 
+    const getFarmDetailsByUserId = async () => {
+        try {
+            const response: any = await GetApi(`${API_URLS.getFarmDetailsByUserId}`)
+            setRowData(response.data)
+            setIsLoading(false)
+        } catch (error) {
+            toast.error("Error while fetching Farm Details", { position: toast.POSITION.TOP_CENTER })
+        }
+    }
+
+    useEffect(() => {
+        getFarmDetailsByUserId();
+    }, []);
+
     const handleAreaValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const numericValue = parseFloat(e.target.value);
         if (!isNaN(numericValue)) {
@@ -109,101 +136,139 @@ export default function AssessmentAndUnderstanding() {
         setFarmData({ ...farmData, areaUnit: e.target.value as string });
     };
 
+    const handleUpdateFarmOpen = (item: any) => {
+
+    }
+
+    const handleDeleteFarmOpen = (item: any) => {
+
+    }
+
+    const handleClick = (value: string, item: any) => {
+        setClick(value);
+        switch (value) {
+            case 'update':
+                handleUpdateFarmOpen(item)
+                break
+            case 'delete':
+                handleDeleteFarmOpen(item);
+                break
+        }
+    }
+
     return (
-        <Paper elevation={3} style={formContainerStyle}>
-            <Typography variant="h5" align="center" style={{ marginBottom: '5px' }}>
-                Farm Information
-            </Typography>
-            <form ref={formRef} onSubmit={handleAddFarm}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            id="location-of-farm"
-                            label="Location of Farm"
-                            placeholder="Location of Farm"
-                            variant="outlined"
-                            value={farmData.location}
-                            onChange={(e) => setFarmData({ ...farmData, location: e.target.value })}
-                            InputProps={{
-                                style: {
-                                    fontSize: '16px',
-                                },
-                                endAdornment: (
-                                    <AddLocationIcon />
-                                ),
-                            }}
-                        />
+        <>
+            <Paper elevation={3} style={formContainerStyle}>
+                <Typography variant="h5" align="center" style={{ marginBottom: '5px' }}>
+                    Farm Information
+                </Typography>
+                <form ref={formRef} onSubmit={handleAddFarm}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                id="location-of-farm"
+                                label="Location of Farm"
+                                placeholder="Location of Farm"
+                                variant="outlined"
+                                value={farmData.location}
+                                onChange={(e) => setFarmData({ ...farmData, location: e.target.value })}
+                                InputProps={{
+                                    style: {
+                                        fontSize: '16px',
+                                    },
+                                    endAdornment: (
+                                        <AddLocationIcon />
+                                    ),
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                id="crops-grown"
+                                label="Crops Grown in the Farm"
+                                placeholder="Enter 1 crop per line"
+                                multiline
+                                variant="outlined"
+                                value={farmData.crops.join('\n')}
+                                onChange={(e) => setFarmData({ ...farmData, crops: e.target.value.split('\n').map(line => line.trim()) })} // Trim each line
+                                required // Add required attribute for validation
+                                InputProps={{
+                                    style: {
+                                        fontSize: '16px',
+                                    },
+                                    endAdornment: (
+                                        <GrassIcon />
+                                    ),
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                id="area-value"
+                                label="Area Value"
+                                placeholder="Area Value"
+                                variant="outlined"
+                                type="number"
+                                value={farmData.areaValue}
+                                onChange={handleAreaValueChange}
+                                InputProps={{
+                                    style: {
+                                        fontSize: '16px',
+                                    },
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Select
+                                fullWidth
+                                id="area-unit"
+                                label="Area Unit"
+                                placeholder="Area Units"
+                                variant="outlined"
+                                value={farmData.areaUnit}
+                                onChange={handleAreaUnitChange}
+                                style={{ fontSize: '16px' }}
+                            >
+                                {areaUnits.map((unit) => (
+                                    <MenuItem key={unit} value={unit}>
+                                        {unit}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                style={buttonStyle}
+                                type="submit"
+                            >
+                                Add Farm
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            id="crops-grown"
-                            label="Crops Grown in the Farm"
-                            placeholder="Enter 1 crop per line"
-                            multiline
-                            variant="outlined"
-                            value={farmData.crops.join('\n')}
-                            onChange={(e) => setFarmData({ ...farmData, crops: e.target.value.split('\n').map(line => line.trim()) })} // Trim each line
-                            required // Add required attribute for validation
-                            InputProps={{
-                                style: {
-                                    fontSize: '16px',
-                                },
-                                endAdornment: (
-                                    <GrassIcon />
-                                ),
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            id="area-value"
-                            label="Area Value"
-                            placeholder="Area Value"
-                            variant="outlined"
-                            type="number"
-                            value={farmData.areaValue}
-                            onChange={handleAreaValueChange}
-                            InputProps={{
-                                style: {
-                                    fontSize: '16px',
-                                },
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Select
-                            fullWidth
-                            id="area-unit"
-                            label="Area Unit"
-                            placeholder="Area Units"
-                            variant="outlined"
-                            value={farmData.areaUnit}
-                            onChange={handleAreaUnitChange}
-                            style={{ fontSize: '16px' }}
-                        >
-                            {areaUnits.map((unit) => (
-                                <MenuItem key={unit} value={unit}>
-                                    {unit}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            style={buttonStyle}
-                            type="submit"
-                        >
-                            Add Farm
-                        </Button>
-                    </Grid>
-                </Grid>
-            </form>
-        </Paper>
+                </form>
+            </Paper>
+
+            <div style={{ padding: '3%' }}>
+                <div style={{ margin: 'auto' }}>
+                    <div>
+                        <Table 
+                            name="mine" 
+                            onClick={handleClick}
+                            rowdata={rowData} 
+                            tableheader={tableHeader} 
+                            isLoading={isLoading} 
+                            page={page} 
+                            setPage={setPage} />
+                    </div>
+                </div>
+            </div>
+
+        </>
     );
 }
