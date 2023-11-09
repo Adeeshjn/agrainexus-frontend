@@ -1,8 +1,9 @@
-import { CircularProgress, TablePagination } from '@mui/material';
+import { Button, CircularProgress, TablePagination } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import '../styles/table.css'
 
 export default function Table(props: any) {
@@ -57,16 +58,19 @@ export default function Table(props: any) {
                         {slicedData.length > 0 ? (
                             slicedData.map((item: any, index: any) => (
                                 <tr key={index} style={{ height: '50px' }}>
-                                    {props.tableheader.map((header: any) => (
-                                        <td key={header.prop + item.teamId}>
+                                    {props.tableheader.map((header: any, columnIndex: number) => (
+                                        <td key={header.prop + item.teamId} style={{ width: columnIndex === 1 ? '10%' : 'auto' }}>
                                             {header.type === 'text' && item[header.prop]}
                                             {header.type === 'boolean' && (item[header.prop] ? 'Yes' : 'No')}
                                             {header.type === 'number' && item[header.prop]}
                                             {header.type === 'date' && moment(item[header.prop]).format('DD-MM-YYYY')}
                                             {header.type === 'button' && (
                                                 <div>
-                                                    <EditIcon fontSize='small' className='me-2' style={{ cursor: 'pointer' }} color='success' onClick={() => onBtnClick('update', item)} />
-                                                    <DeleteIcon style={{ cursor: 'pointer' }} color="error" fontSize='small' onClick={() => onBtnClick('delete', item)} />
+                                                    <EditIcon fontSize='small' style={{cursor:'pointer'}} className='me-2' color='success' onClick={() => onBtnClick('update', item)} />
+                                                    <DeleteIcon color="error" fontSize='small' style={{cursor:'pointer'}} onClick={() => onBtnClick('delete', item)} />
+                                                    <Button startIcon={<QuestionMarkIcon />} onClick={() => onBtnClick('assess', item)}>
+                                                        Assess
+                                                    </Button>
                                                 </div>
                                             )}
                                         </td>
