@@ -4,7 +4,7 @@ import AbcIcon from '@mui/icons-material/Abc';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import GrassIcon from '@mui/icons-material/Grass';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-import { API_URLS } from "../constants/static";
+import { API_URLS, frontEndUrl } from "../constants/static";
 import postApi from "../api/PostApi";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
@@ -228,7 +228,7 @@ export default function AssessmentAndUnderstanding() {
     return (
         <>
             <div style={containerStyle}>
-                <a href="http://localhost:3000" style={{ color: "black" }}>
+                <a href={frontEndUrl} style={{ color: "black" }}>
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>
                 <Typography variant="h4" align="center" >Manage your farm details here</Typography>
