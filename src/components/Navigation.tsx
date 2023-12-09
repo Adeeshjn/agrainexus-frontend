@@ -78,13 +78,13 @@ const Navigation = () => {
                             </a>
                         </li>
                         <li className="nav-item">
-                            <a href="#testimonials" className="nav-link page-scroll">
-                                Testimonials
+                            <a href="#team" className="nav-link page-scroll">
+                                Team
                             </a>
                         </li>
                         <li className="nav-item">
-                            <a href="#team" className="nav-link page-scroll">
-                                Team
+                            <a href="#testimonials" className="nav-link page-scroll">
+                                Testimonials
                             </a>
                         </li>
                         <li className="nav-item">
