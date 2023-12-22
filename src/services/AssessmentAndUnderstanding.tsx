@@ -244,7 +244,7 @@ export default function AssessmentAndUnderstanding() {
                 <a href={frontEndUrl} style={{ color: "black" }}>
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>
-                <Typography variant="h4" align="center" >Manage your farm details here</Typography>
+                <Typography variant="h4" align="center" >Manage Your Farm Details Here</Typography>
                 <Button style={{ margin: '10px' }} variant="contained" startIcon={<AddIcon />} onClick={handleAddFarmOpen}>
                     Add Farm
                 </Button>
