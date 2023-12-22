@@ -1,10 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
-import { TextField, Button, Paper, Grid, Typography, Select, MenuItem, SelectChangeEvent, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import React, {
+    useState,
+    useEffect,
+    useRef
+} from "react";
+import {
+    TextField,
+    Button,
+    Paper,
+    Grid,
+    Typography,
+    Select,
+    MenuItem,
+    SelectChangeEvent,
+    Dialog,
+    DialogContent
+} from "@mui/material";
 import AbcIcon from '@mui/icons-material/Abc';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import GrassIcon from '@mui/icons-material/Grass';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-import { API_URLS, frontEndUrl } from "../constants/static";
+import { 
+    API_URLS, 
+    frontEndUrl 
+} from "../constants/static";
 import postApi from "../api/PostApi";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
@@ -13,7 +31,7 @@ import Table from "../shared/Table";
 import html2pdf from 'html2pdf.js';
 import GoogleMapComponent from "../components/GoogleMapComponent";
 import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas';
+import 'jspdf-autotable';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -111,6 +129,7 @@ export default function AssessmentAndUnderstanding() {
         const isFormValid = formRef.current.checkValidity();
         if (isFormValid) {
             const item = {
+                nickName: farmData.nickName,
                 location: farmData.location,
                 crops: farmData.crops.join(','),
                 Area: farmData.areaValue.toString(),
@@ -175,40 +194,34 @@ export default function AssessmentAndUnderstanding() {
 
     const handleDeleteFarmOpen = (item: any) => {
         // Implement delete functionality
-    };
+    };   
 
     const handleAssessFarm = async (item: any) => {
         try {
-            const contentDiv = document.createElement('div');
-
-            contentDiv.innerHTML = `
-                <h2>Farm Assessment</h2>
-                <p>Farm Nick Name: ${item.nickName}</p>
-                <p>Location: ${item.location}</p>
-                <p>Crops: ${Array.isArray(item.crops) ? item.crops.join(', ') : item.crops}</p>
-                <p>Area: ${item.areaValue} ${item.areaUnit}</p>
-            `;
-
-            // Append the content to the DOM (required for html2canvas)
-            document.body.appendChild(contentDiv);
-
-            const canvas = await html2canvas(contentDiv);
-
-            // Remove the temporary content from the DOM
-            document.body.removeChild(contentDiv);
-
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, 210, 297); // Assuming A4 size
-
+            const pdf = new jsPDF();
+    
+            // Set up the content for the table
+            const tableData = [
+                ['Farm Nick Name', item.nickName],
+                ['Location', item.location],
+                ['Crops', Array.isArray(item.crops) ? item.crops.join(', ') : item.crops],
+                ['Area', `${item.areaValue} ${item.areaUnit}`],
+            ];
+    
+            // Add a header
+            pdf.text('Farm Assessment', 10, 10);
+    
+            // Add the autoTable plugin
+            (pdf as any).autoTable({ head: [['Field', 'Value']], body: tableData, startY: 20 });
+    
+            // Save the PDF
             pdf.save(`Farm_Assessment_${item.nickName}.pdf`);
+    
         } catch (error) {
             console.error('Error generating PDF:', error);
             // Handle the error appropriately
         }
     };
-
-
-
 
     const handleClick = (value: string, item: any) => {
         setClick(value);
@@ -232,7 +245,6 @@ export default function AssessmentAndUnderstanding() {
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>
                 <Typography variant="h4" align="center" >Manage your farm details here</Typography>
-
                 <Button style={{ margin: '10px' }} variant="contained" startIcon={<AddIcon />} onClick={handleAddFarmOpen}>
                     Add Farm
                 </Button>
@@ -262,7 +274,7 @@ export default function AssessmentAndUnderstanding() {
                                                     placeholder="Nick Name of Farm"
                                                     variant="outlined"
                                                     value={farmData.nickName}
-                                                    onChange={(e) => setFarmData({ ...farmData, location: e.target.value })}
+                                                    onChange={(e) => setFarmData({ ...farmData, nickName: e.target.value })}
                                                     required
                                                     InputProps={{
                                                         style: {
@@ -368,19 +380,18 @@ export default function AssessmentAndUnderstanding() {
                         </Grid>
                     </DialogContent>
                 </Dialog>
-
             </div>
             <div style={{ padding: '3%' }}>
                 <div style={{ margin: 'auto' }}>
                     <div>
-                        <Table 
-                            name="mine" 
-                            onClick={handleClick} 
-                            rowdata={rowData} 
-                            tableheader={tableHeader} 
-                            isLoading={isLoading} 
-                            page={page} 
-                            setPage={setPage} 
+                        <Table
+                            name="mine"
+                            onClick={handleClick}
+                            rowdata={rowData}
+                            tableheader={tableHeader}
+                            isLoading={isLoading}
+                            page={page}
+                            setPage={setPage}
                         />
                     </div>
                 </div>
@@ -388,4 +399,3 @@ export default function AssessmentAndUnderstanding() {
         </>
     );
 }
-

@@ -1,83 +1,71 @@
-// src/components/MapContainer.tsx
-import React, { useEffect } from 'react';
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import GoogleAutoComplete from 'react-google-autocomplete';
-import { Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Place } from '@mui/icons-material';
+import { renderToString } from 'react-dom/server';
 
-interface MapContainerProps {}
+const MapComponent: React.FC = () => {
+  const [position, setPosition] = useState<[number, number] | null>(null);
+  const [address, setAddress] = useState('');
 
-interface MarkerPosition {
-  lat: number | null;
-  lng: number | null;
-}
+  const handleSelect = async (value: string) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${value}`);
+      const data = await response.json();
 
-const containerStyle = {
-  marginTop: '30px',
-  marginLeft: '30px',
-  width: '400px', // Adjust the width here
-  height: '400px',
-};
-
-const MapContainer: React.FC<MapContainerProps> = () => {
-  const [marker, setMarker] = React.useState<MarkerPosition>({ lat: null, lng: null });
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your API key
-  });
-
-  const handlePlaceSelected = (place: any) => {
-    // Check if place and place.geometry are defined before accessing location
-    if (place?.geometry?.location) {
-      setMarker({
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      });
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        setPosition([parseFloat(lat), parseFloat(lon)]);
+        setAddress(value);
+      }
+    } catch (error) {
+      console.error('Error fetching location:', error);
     }
   };
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setMarker({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error('Error getting current location:', error);
-          // Fallback to a default location if there is an error
-          setMarker({ lat: -34.397, lng: 150.644 });
-        }
+  const SetLocationMarker = () => {
+    const map = useMapEvents({
+      click: (e) => {
+        setPosition([e.latlng.lat, e.latlng.lng]);
+      },
+    });
+
+    const customIcon = L.divIcon({
+      className: 'MuiIcon',
+      html: renderToString(<Place style={{ fontSize: 32, color: 'green' }} />),
+    });
+
+    if (position) {
+      return (
+        <Marker position={position} icon={customIcon}>
+          {address && <Popup>{address}</Popup>}
+        </Marker>
       );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-      // Fallback to a default location if geolocation is not supported
-      setMarker({ lat: -34.397, lng: 150.644 });
     }
-  };
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, []); // Run only once when the component mounts
+    return null;
+  };
 
   return (
     <div>
-      {/* <GoogleAutoComplete onSelect={handlePlaceSelected} /> */}
-      {isLoaded && marker.lat !== null && marker.lng !== null && (
-        <GoogleMap mapContainerStyle={containerStyle} center={{ lat: marker.lat, lng: marker.lng }} zoom={8}>
-          <Marker position={{ lat: marker.lat, lng: marker.lng }} />
-        </GoogleMap>
-      )}
+      <input
+        type="text"
+        placeholder="Search for places"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+      />
+      <button onClick={() => handleSelect(address)}>Search</button>
+
+      <MapContainer center={[0, 0]} zoom={2} style={{ height: '400px', width: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <SetLocationMarker />
+      </MapContainer>
     </div>
   );
 };
 
-export default MapContainer;
-// import React from 'react'
-
-// export default function GoogleMapComponent() {
-//   return (
-//     <div>GoogleMapComponent</div>
-//   )
-// }
+export default MapComponent;

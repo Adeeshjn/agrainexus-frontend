@@ -147,7 +147,7 @@ export const Contact = (props: any) => {
             </div>
             <div id="footer">
                 <div className="container text-center">
-                    <p>
+                    <p style={{color: 'black', fontWeight: 'bold'}}>
                         &copy; 2023 AGRAINEXUS
                     </p>
                 </div>

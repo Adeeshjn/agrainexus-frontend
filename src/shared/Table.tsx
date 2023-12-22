@@ -29,8 +29,19 @@ export default function CustomTable(props: any) {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    const slicedData = props.rowdata.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+    let numberOfEntries
+    let slicedData
+    if(props.rowdata == "Data Not Found") {
+        slicedData = null;
+        numberOfEntries = 0
+    }
+    else {
+        slicedData = props.rowdata.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+        numberOfEntries = props.rowdata.length;
+    }
+    
+    // console.log(slicedData)
+    
 
     const onBtnClick = (val: any, id: any) => {
         props.onClick(val, id);
@@ -40,15 +51,14 @@ export default function CustomTable(props: any) {
         <div>
             <TablePagination
                 component="div"
-                count={props.rowdata.length}
+                count={numberOfEntries}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 className="pagination-container"
-                labelRowsPerPage=""
+                labelRowsPerPage="Rows Per Page: "
             />
-
             <TableContainer component={Paper}>
                 <Table size="small" aria-label="a dense table">
                     <TableHead sx={{background:'darkgreen'}}>
@@ -61,10 +71,10 @@ export default function CustomTable(props: any) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {slicedData.length > 0 ? (
+                        {slicedData != null ? (
                             slicedData.map((item: any, index: any) => (
                                 <TableRow key={index} style={{ height: '50px' }}>
-                                    {props.tableheader.map((header: any, columnIndex: any) => (
+                                    {props.tableheader.map((header: any) => (
                                         <TableCell sx={{background: 'lightgreen'}} key={header.prop + item.teamId}>
                                             {header.type === 'text' && item[header.prop]}
                                             {header.type === 'boolean' && (item[header.prop] ? 'Yes' : 'No')}
@@ -89,7 +99,7 @@ export default function CustomTable(props: any) {
                                     {props.isLoading ? (
                                         <CircularProgress size={40} />
                                     ) : (
-                                        'No search results found'
+                                        'No Farm Data - Add your farms to view the data here.'
                                     )}
                                 </TableCell>
                             </TableRow>
