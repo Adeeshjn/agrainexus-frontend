@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, IconButton, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, Button, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import jwtDecode from 'jwt-decode';
 import { Logout } from "@mui/icons-material";

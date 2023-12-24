@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_URLS } from '../constants/static';
 import postApi from '../api/PostApi';
 import { toast } from 'react-toastify';
+import React from 'react';
 
 const customTheme: any = createTheme({
     palette: {
@@ -106,120 +107,121 @@ const Login = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         if (formRef.current) {
             const isFormValid = formRef.current.checkValidity();
+
             if (isFormValid) {
                 let item = { userName: userName, password: password };
                 let body = {
                     Url: API_URLS.login,
                     body: item,
                     isAuth: false
-                }
+                };
+
                 try {
-                    let response: any = await postApi(body, setIsLoading)
+                    let response: any = await postApi(body, setIsLoading);
+
                     if (response.data) {
                         localStorage.setItem('token', response.data.token);
-                        navigate('/');
+                        navigate('/')
                     }
-                }
-                catch (error: any) {
+                } catch (error: any) {
                     toast.error(error, {
                         position: toast.POSITION.TOP_CENTER
                     });
-                } finally {
-                    setIsLoading(false); // Hide loader
                 }
-
             }
-
         } else {
             toast.error("Enter correct details", {
                 position: toast.POSITION.TOP_CENTER
             });
         }
-    }
+    };
 
+    const isFormValid = userName && password
 
-return (
-    <ThemeProvider theme={customTheme}>
-        <div style={styles.root}>
-            <img
-                src={LoginImage} // Replace with the actual path to your image file
-                alt="LoginImage"
-                style={styles.image}
-            />
-            <Container component="main" maxWidth="xs" style={styles.formContainer}>
-                <CssBaseline />
-                <div>
-                    <Avatar style={styles.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography style={{ textAlign: 'center', paddingTop: '5px', fontSize: '20px' }} component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <form ref={formRef} style={styles.form} onSubmit={handleSubmit}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="User Name"
-                            placeholder='User Name'
-                            name="username"
-                            autoComplete="username"
-                            value={userName}
-                            onChange={handleUserNameChange}
-                            InputProps={{
-                                style: {
-                                    fontSize: '16px', // Set your desired font size here
-                                },
-                            }}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            placeholder='Password'
-                            type={showPassword ? 'password' : 'text'}
-                            id="password"
-                            autoComplete="current-password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            InputProps={{
-                                style: {
-                                    fontSize: '16px', // Set your desired font size here
-                                },
-                                endAdornment: (
-                                    <InputAdornment style={{ cursor: 'pointer' }} position="end">
-                                        {showPassword ? (
-                                            <VisibilityIcon onClick={togglePasswordVisibility} />
-                                        ) : (
-                                            <VisibilityOffIcon onClick={togglePasswordVisibility} />
-                                        )}
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <Button type="submit" fullWidth variant="contained" style={styles.submit}>
-                            Sign In
-                        </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Link href='/register' style={{ cursor: 'pointer', textDecoration: 'none' }}>
-                                    Don't have an account? Sign Up
-                                </Link>
+    return (
+        <ThemeProvider theme={customTheme}>
+            <div style={styles.root}>
+                <img
+                    src={LoginImage} // Replace with the actual path to your image file
+                    alt="LoginImage"
+                    style={styles.image}
+                />
+                <Container component="main" maxWidth="xs" style={styles.formContainer}>
+                    <CssBaseline />
+                    <div>
+                        <Avatar style={styles.avatar}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography style={{ textAlign: 'center', paddingTop: '5px', fontSize: '20px' }} component="h1" variant="h5">
+                            Sign in
+                        </Typography>
+                        <form ref={formRef} style={styles.form} onSubmit={handleSubmit}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="username"
+                                label="User Name"
+                                placeholder='User Name'
+                                name="username"
+                                autoComplete="username"
+                                value={userName}
+                                onChange={handleUserNameChange}
+                                InputProps={{
+                                    style: {
+                                        fontSize: '16px', // Set your desired font size here
+                                    },
+                                }}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                placeholder='Password'
+                                type={showPassword ? 'password' : 'text'}
+                                id="password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                InputProps={{
+                                    style: {
+                                        fontSize: '16px', // Set your desired font size here
+                                    },
+                                    endAdornment: (
+                                        <InputAdornment style={{ cursor: 'pointer' }} position="end">
+                                            {showPassword ? (
+                                                <VisibilityIcon onClick={togglePasswordVisibility} />
+                                            ) : (
+                                                <VisibilityOffIcon onClick={togglePasswordVisibility} />
+                                            )}
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Button type="submit" disabled={!isFormValid} fullWidth variant="contained" style={styles.submit}>
+                                Sign In
+                            </Button>
+
+                            <Grid container>
+                                <Grid item>
+                                    <Link href='/register' style={{ cursor: 'pointer', textDecoration: 'none' }}>
+                                        Don't have an account? Sign Up
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </form>
-                </div>
-            </Container>
-        </div>
-    </ThemeProvider>
-);
+                        </form>
+                    </div>
+                </Container>
+            </div>
+        </ThemeProvider>
+    );
 };
 
 export default Login;

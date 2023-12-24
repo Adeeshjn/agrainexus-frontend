@@ -145,6 +145,8 @@ const Register = () => {
         }
     };
 
+    const isFormValid = userName && email && password && confirmPassword
+
     return (
         <ThemeProvider theme={customTheme}>
             {/* <ToastContainer/> */}
@@ -256,7 +258,7 @@ const Register = () => {
                                     ),
                                 }}
                             />
-                            <Button type="submit" fullWidth variant="contained" style={styles.submit}>
+                            <Button type="submit" disabled={!isFormValid} fullWidth variant="contained" style={styles.submit}>
                                 Sign Up
                             </Button>
                             <Grid container>

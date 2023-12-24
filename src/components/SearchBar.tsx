@@ -57,7 +57,7 @@ const SearchBar = () => {
             style={{
                 position: "relative",
                 display: "inline-block",
-                width: isFocused ? "400px" : "300px",
+                width: isFocused ? "330px" : "300px",
                 height: "48px",
                 backgroundColor: isFocused ? "#fff" : "#f7f7f7",
                 borderRadius: "10px",

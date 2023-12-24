@@ -31,7 +31,7 @@ export default function CustomTable(props: any) {
     };
     let numberOfEntries
     let slicedData
-    if(props.rowdata == "Data Not Found") {
+    if(props.rowdata === "Data Not Found") {
         slicedData = null;
         numberOfEntries = 0
     }

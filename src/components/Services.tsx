@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip"
 
 export const Services = () => {
     const token: any = localStorage.token;
@@ -83,15 +82,13 @@ export const Services = () => {
                                     </Typography>
                                 </CardContent>
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px' }}>
-                                    {token ? (
+                                    {
+                                        token 
+                                        &&
                                         <Button variant="contained" color="primary" href={image.link} >
                                             Learn More {'>>>'}
                                         </Button>
-                                    ) : (
-                                        <Button variant="contained" disabled>
-                                            Learn More {'>>>'}
-                                        </Button>
-                                    )}
+                                    }
                                 </div>
                             </Card>
                         </Grid>

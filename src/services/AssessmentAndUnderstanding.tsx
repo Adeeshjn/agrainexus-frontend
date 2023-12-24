@@ -28,12 +28,12 @@ import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import GetApi from "../api/GetApi";
 import Table from "../shared/Table";
-import html2pdf from 'html2pdf.js';
 import GoogleMapComponent from "../components/GoogleMapComponent";
 import jsPDF from 'jspdf'
 import 'jspdf-autotable';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import Loader from "../shared/LazyLoading";
 
 interface FarmData {
     nickName: string;
@@ -67,7 +67,7 @@ export default function AssessmentAndUnderstanding() {
     const formRef: any = useRef(null);
     const [rowData, setRowData] = useState<any[]>([]);
     const [click, setClick] = useState('');
-    const [isUpdateFarmOpen, setIsUpdateFarmOpen] = useState(false);
+    // const [isUpdateFarmOpen, setIsUpdateFarmOpen] = useState(false);
     const [page, setPage] = useState(0);
     const [farmData, setFarmData] = useState<FarmData>({
         nickName: "",
@@ -210,7 +210,7 @@ export default function AssessmentAndUnderstanding() {
     
             // Add a header
             pdf.text('Farm Assessment', 10, 10);
-    
+            
             // Add the autoTable plugin
             (pdf as any).autoTable({ head: [['Field', 'Value']], body: tableData, startY: 20 });
     
