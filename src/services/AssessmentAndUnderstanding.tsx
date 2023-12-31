@@ -19,9 +19,9 @@ import AbcIcon from '@mui/icons-material/Abc';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import GrassIcon from '@mui/icons-material/Grass';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-import { 
-    API_URLS, 
-    frontEndUrl 
+import {
+    API_URLS,
+    frontEndUrl
 } from "../constants/static";
 import postApi from "../api/PostApi";
 import { toast } from "react-toastify";
@@ -34,6 +34,12 @@ import 'jspdf-autotable';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import Loader from "../shared/LazyLoading";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 interface FarmData {
     nickName: string;
@@ -78,6 +84,15 @@ export default function AssessmentAndUnderstanding() {
         userId: 0
     });
     const [isAddFarmOpen, setIsAddFarmOpen] = useState(false)
+
+    const accordionStyle = {
+        backgroundColor: 'green', // Set your desired background color
+        color: 'white', // Set text color if needed
+    };
+
+    const handleAccordionChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+        setClick(isExpanded ? panel : "");
+    };
 
     const handleAddFarmOpen = () => {
         setFarmData({
@@ -194,12 +209,12 @@ export default function AssessmentAndUnderstanding() {
 
     const handleDeleteFarmOpen = (item: any) => {
         // Implement delete functionality
-    };   
+    };
 
     const handleAssessFarm = async (item: any) => {
         try {
             const pdf = new jsPDF();
-    
+
             // Set up the content for the table
             const tableData = [
                 ['Farm Nick Name', item.nickName],
@@ -207,16 +222,16 @@ export default function AssessmentAndUnderstanding() {
                 ['Crops', Array.isArray(item.crops) ? item.crops.join(', ') : item.crops],
                 ['Area', `${item.areaValue} ${item.areaUnit}`],
             ];
-    
+
             // Add a header
             pdf.text('Farm Assessment', 10, 10);
-            
+
             // Add the autoTable plugin
             (pdf as any).autoTable({ head: [['Field', 'Value']], body: tableData, startY: 20 });
-    
+
             // Save the PDF
             pdf.save(`Farm_Assessment_${item.nickName}.pdf`);
-    
+
         } catch (error) {
             console.error('Error generating PDF:', error);
             // Handle the error appropriately
@@ -383,17 +398,55 @@ export default function AssessmentAndUnderstanding() {
             </div>
             <div style={{ padding: '3%' }}>
                 <div style={{ margin: 'auto' }}>
-                    <div>
-                        <Table
-                            name="mine"
-                            onClick={handleClick}
-                            rowdata={rowData}
-                            tableheader={tableHeader}
-                            isLoading={isLoading}
-                            page={page}
-                            setPage={setPage}
-                        />
-                    </div>
+                    {rowData.map((item, index) => (
+                        <Accordion
+                            key={index}
+                            expanded={click === `panel${index}`}
+                            onChange={handleAccordionChange(`panel${index}`)}
+                            style={accordionStyle}
+                        >
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls={`panel${index}bh-content`}
+                                id={`panel${index}bh-header`}
+                            >
+                                <Typography variant="h6">{item.nickName}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {/* Replace the content below with your desired layout */}
+                                <div>
+                                    <Typography variant="subtitle1">Location: {item.location}</Typography>
+                                    <Typography variant="subtitle1">Crops: {item.crops}</Typography>
+                                    <Typography variant="subtitle1">Area: {item.areaValue} {item.areaUnit}</Typography>
+                                    <Button
+                                        variant="contained"
+                                        style={{ color: 'black', marginRight: '8px' }}
+                                        color="primary"
+                                        onClick={() => handleUpdateFarmOpen(item)}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{ color: 'black', marginRight: '8px' }}
+                                        color="error"
+                                        onClick={() => handleDeleteFarmOpen(item)}
+                                    >
+                                        Delete
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{ color: 'black' }}
+                                        color="primary"
+                                        onClick={() => handleAssessFarm(item)}
+                                    >
+                                        Assess
+                                    </Button>
+
+                                </div>
+                            </AccordionDetails>
+                        </Accordion>
+                    ))}
                 </div>
             </div>
         </>

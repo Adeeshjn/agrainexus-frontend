@@ -39,14 +39,21 @@ const styles: any = {
         height: '100vh',
         alignItems: 'center',
         justifyContent: 'flex-end',
+        backgroundImage: `url(${LoginImage})`,  // Set the background image
+        backgroundSize: 'cover',  // Ensure the image covers the entire container
+        backgroundPosition: 'center',
+        // backgroundColor: 'lightgreen'
     },
     formContainer: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         padding: '20px',
-        backgroundColor: '#ffffff', // Optional: You can set a background color for the form area
+        backgroundColor: 'lightgreen', // Optional: You can set a background color for the form area
         boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.16)', // Optional: Add some shadow to the form
+        // backgroundImage: `url(${LoginImage})`,  // Set the background image
+        // backgroundSize: 'cover',  // Ensure the image covers the entire container
+        // backgroundPosition: 'center',
     },
     avatar: {
         position: 'relative',
@@ -144,11 +151,11 @@ const Login = () => {
     return (
         <ThemeProvider theme={customTheme}>
             <div style={styles.root}>
-                <img
+                {/* <img
                     src={LoginImage} // Replace with the actual path to your image file
                     alt="LoginImage"
                     style={styles.image}
-                />
+                /> */}
                 <Container component="main" maxWidth="xs" style={styles.formContainer}>
                     <CssBaseline />
                     <div>
