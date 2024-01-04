@@ -28,13 +28,11 @@ import postApi from "../api/PostApi";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import GetApi from "../api/GetApi";
-import Table from "../shared/Table";
 import GoogleMapComponent from "../components/GoogleMapComponent";
 import jsPDF from 'jspdf'
 import 'jspdf-autotable';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import Loader from "../shared/LazyLoading";
 import {
     Accordion,
     AccordionDetails,
@@ -42,6 +40,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Loader from "../shared/LazyLoading";
 
 interface FarmData {
     nickName: string;
@@ -76,7 +75,7 @@ export default function AssessmentAndUnderstanding() {
     const [rowData, setRowData] = useState<any[]>([]);
     const [click, setClick] = useState('');
     // const [isUpdateFarmOpen, setIsUpdateFarmOpen] = useState(false);
-    const [page, setPage] = useState(0);
+    // const [page, setPage] = useState(0);
     const [farmData, setFarmData] = useState<FarmData>({
         nickName: "",
         location: "",
@@ -114,13 +113,13 @@ export default function AssessmentAndUnderstanding() {
         setIsAddFarmOpen(false)
     }
 
-    const tableHeader = [
-        { title: 'Nick Name', type: 'text', prop: 'nickName', sort: false, filter: false, asc: false, des: false },
-        { title: 'Location', type: 'text', prop: 'location', sort: false, filter: false, asc: false, des: false },
-        { title: 'Crops', type: 'text', prop: 'crops', sort: false, filter: false, asc: false, des: false },
-        { title: 'Area', type: 'text', prop: 'area', sort: false, filter: false, asc: false, des: false },
-        { title: 'Action', type: 'button', prop: 'button', sort: false, filter: false, asc: false, des: false }
-    ];
+    // const tableHeader = [
+    //     { title: 'Nick Name', type: 'text', prop: 'nickName', sort: false, filter: false, asc: false, des: false },
+    //     { title: 'Location', type: 'text', prop: 'location', sort: false, filter: false, asc: false, des: false },
+    //     { title: 'Crops', type: 'text', prop: 'crops', sort: false, filter: false, asc: false, des: false },
+    //     { title: 'Area', type: 'text', prop: 'area', sort: false, filter: false, asc: false, des: false },
+    //     { title: 'Action', type: 'button', prop: 'button', sort: false, filter: false, asc: false, des: false }
+    // ];
 
     let token: any = localStorage.getItem("token");
     let decodedToken: any = jwtDecode(token);
@@ -141,7 +140,7 @@ export default function AssessmentAndUnderstanding() {
         } else {
             console.error('Geolocation is not supported by your browser.');
         }
-    }, []);
+    });
 
     const handleAddFarm = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -242,24 +241,24 @@ export default function AssessmentAndUnderstanding() {
         }
     };
 
-    const handleClick = (value: string, item: any) => {
-        setClick(value);
-        switch (value) {
-            case 'update':
-                handleUpdateFarmOpen(item);
-                break;
-            case 'delete':
-                handleDeleteFarmOpen(item);
-                break;
-            case 'assess':
-                handleAssessFarm(item);
-                break;
-        }
-    };
+    // const handleClick = (value: string, item: any) => {
+    //     setClick(value);
+    //     switch (value) {
+    //         case 'update':
+    //             handleUpdateFarmOpen(item);
+    //             break;
+    //         case 'delete':
+    //             handleDeleteFarmOpen(item);
+    //             break;
+    //         case 'assess':
+    //             handleAssessFarm(item);
+    //             break;
+    //     }
+    // };
 
     return (
-        <>
-            <div style={containerStyle}>
+        <> 
+            <div style={containerStyle}> {isLoading && <Loader/>}
                 <a href={frontEndUrl} style={{ color: "black" }}>
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>
