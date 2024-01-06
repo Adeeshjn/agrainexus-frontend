@@ -1,4 +1,8 @@
-export const Team = (props: any) => {
+// Team.tsx
+
+import { TeamData } from '../constants/teamData'; // Import the teamData array
+
+export default function Team() {
     return (
         <div id="team" className="text-center">
             <div className="container">
@@ -6,20 +10,18 @@ export const Team = (props: any) => {
                     <h2>Meet the Team</h2>
                 </div>
                 <div id="row">
-                    {props.data
-                        ? props.data.map((d: any, i: any) => (
-                            <div key={`${d.name}-${i}`} className="col-md-3 col-sm-6 team">
-                                <div className="thumbnail">
-                                    {" "}
-                                    <img src={d.img} alt="..." className="team-img" />
-                                    <div className="caption">
-                                        <h4>{d.name}</h4>
-                                        <p>{d.job}</p>
-                                    </div>
+                    {TeamData.map((d, i) => (
+                        <div key={`${d.name}-${i}`} className="col-md-3 col-sm-6 team">
+                            <div className="thumbnail">
+                                {" "}
+                                <img src={d.img} alt="..." className="team-img" />
+                                <div className="caption">
+                                    <h4>{d.name}</h4>
+                                    <p>{d.job}</p>
                                 </div>
                             </div>
-                        ))
-                        : "loading"}
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

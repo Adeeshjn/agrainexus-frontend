@@ -1,12 +1,14 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
+import { ContactDetails } from "../constants/contactDetails";
 
 const initialState = {
     name: "",
     email: "",
     message: "",
 };
-export const Contact = (props: any) => {
+
+export default function Contact () {
     const [{ name, email, message }, setState] = useState(initialState);
 
     const handleChange = (e: any) => {
@@ -100,7 +102,7 @@ export const Contact = (props: any) => {
                                 <span>
                                     <i className="fa fa-map-marker"></i> Address
                                 </span>
-                                {props.data ? props.data.address : "loading"}
+                                {ContactDetails.address}
                             </p>
                         </div>
                         <div className="contact-item">
@@ -108,7 +110,7 @@ export const Contact = (props: any) => {
                                 <span>
                                     <i className="fa fa-phone"></i> Phone
                                 </span>{" "}
-                                {props.data ? props.data.phone : "loading"}
+                                {ContactDetails.phone}
                             </p>
                         </div>
                         <div className="contact-item">
@@ -116,7 +118,7 @@ export const Contact = (props: any) => {
                                 <span>
                                     <i className="fa fa-envelope-o"></i> Email
                                 </span>{" "}
-                                {props.data ? props.data.email : "loading"}
+                                {ContactDetails.email}
                             </p>
                         </div>
                     </div>
@@ -125,17 +127,17 @@ export const Contact = (props: any) => {
                             <div className="social">
                                 <ul>
                                     <li>
-                                        <a href={props.data ? props.data.facebook : "/"}>
+                                        <a href={ContactDetails.facebook}>
                                             <i className="fa fa-facebook"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href={props.data ? props.data.twitter : "/"}>
+                                        <a href={ContactDetails.twitter}>
                                             <i className="fa fa-twitter"></i>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href={props.data ? props.data.youtube : "/"}>
+                                        <a href={ContactDetails.youtube}>
                                             <i className="fa fa-youtube"></i>
                                         </a>
                                     </li>

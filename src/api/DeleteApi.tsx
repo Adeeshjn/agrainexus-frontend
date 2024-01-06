@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import toaster from '../shared/toaster'
 
-const deleteApi = async (body: any, setLoading: (loading: boolean) => void) => {
+export default async function deleteApi (body: any, setLoading: (loading: boolean) => void) {
     let headersWithAuth = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -37,5 +37,3 @@ const deleteApi = async (body: any, setLoading: (loading: boolean) => void) => {
         setLoading(false)
     }
 }
-
-export default deleteApi

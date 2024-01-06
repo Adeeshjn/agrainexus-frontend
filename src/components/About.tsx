@@ -1,10 +1,6 @@
-interface AboutProps {
-    data: {
-        paragraph: string;
-    };
-}
+import { AboutUs } from "../constants/aboutUs"
 
-const About: React.FC<AboutProps> = ({ data }) => {
+export default function About () {
     return (
         <div id="about">
             <div className="container">
@@ -12,7 +8,7 @@ const About: React.FC<AboutProps> = ({ data }) => {
                     <div className="col-xs-12 col-md-12">
                         <div className="about-text">
                             <h2>About Us</h2>
-                            <p>{data ? data.paragraph : "loading..."}</p>
+                            <p>{AboutUs.paragraph}</p>
                         </div>
                     </div>
                 </div>
@@ -20,5 +16,3 @@ const About: React.FC<AboutProps> = ({ data }) => {
         </div>
     )
 }
-
-export default About

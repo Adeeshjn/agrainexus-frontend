@@ -1,8 +1,6 @@
-import React from 'react';
 import axios from 'axios';
-import Toaster from '../shared/toaster';
 
-const postApi = async (body: any,setLoading: (loading: boolean) => void) => {
+export default async function postApi(body: any,setLoading: (loading: boolean) => void) {
     let headersWithAuth = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -38,6 +36,3 @@ const postApi = async (body: any,setLoading: (loading: boolean) => void) => {
       }
   
 }
-
-
-export default postApi

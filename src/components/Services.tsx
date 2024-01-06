@@ -1,60 +1,60 @@
 import React from "react";
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 
-export const Services = () => {
+export default function Services () {
     const token: any = localStorage.token;
 
     const images = [
         {
-            src: 'img/img-services/AssessmentAndUnderstanding.jpg',
+            src: require('../images/img-services/AssessmentAndUnderstanding.jpg'),
             alt: 'Image 1',
             description: 'Assessment and Understanding',
             link: '../ServicePages/AssessmentAndUnderstanding'
         },
         {
-            src: 'img/img-services/GlobalCropDashboard.jpeg',
+            src: require('../images/img-services/GlobalCropDashboard.jpeg'),
             alt: 'Image 2',
             description: 'Global Crop Dashboard',
             link: '../ServicePages/GlobalCropDashboard'
         },
         {
-            src: 'img/img-services/RealtimeExpertAdvisory.jpeg',
+            src: require('../images/img-services/RealtimeExpertAdvisory.jpeg'),
             alt: 'Image 3',
             description: 'Realtime Expert Advisory',
             link: '../ServicePages/RealTimeExpertAdvisory'
         },
         {
-            src: 'img/img-services/ModernFarmsEquipmentSharedServices.jpeg',
+            src: require('../images/img-services/ModernFarmsEquipmentSharedServices.jpeg'),
             alt: 'Image 4',
             description: 'Modern Farms Equipment Shared Services',
             link: '../ServicePages/ModernFarmEquipment'
         },
         {
-            src: 'img/img-services/Agri-Tech-CropTraining.jpeg',
+            src: require('../images/img-services/Agri-Tech-CropTraining.jpeg'),
             alt: 'Image 5',
             description: 'Agri-Tech Crop Training',
             link: '../ServicePages/AgriTechTraining'
         },
         {
-            src: 'img/img-services/DronesForCrop.jpeg',
+            src: require('../images/img-services/DronesForCrop.jpeg'),
             alt: 'Image 6',
             description: 'Drones For Crop',
             link: '../ServicePages/DronesForCrop'
         },
         {
-            src: 'img/img-services/ClimateSmartAgriStrategy.jpeg',
+            src: require('../images/img-services/ClimateSmartAgriStrategy.jpeg'),
             alt: 'Image 7',
             description: 'Climate Smart Agri Strategy',
             link: '../ServicePages/ClimateSmartAgriStrategy'
         },
         {
-            src: 'img/img-services/Co-Farming-ManagedAgriEconomic-Model.jpeg',
+            src: require('../images/img-services/Co-Farming-ManagedAgriEconomic-Model.jpeg'),
             alt: 'Image 8',
             description: 'Co-Farming Managed Agri-Economic Model',
             link: '../ServicePages/CoFarmingModel'
         },
         {
-            src: 'img/img-services/GlobalAgriSkillDevelopment.jpeg',
+            src: require('../images/img-services/GlobalAgriSkillDevelopment.jpeg'),
             alt: 'Image 9',
             description: 'Global Agri Skill Development',
             link: '../ServicePages/GlobalAgriSkill'

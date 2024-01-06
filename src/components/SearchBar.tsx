@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar = () => {
+export default function SearchBar () {
     const [isFocused, setIsFocused] = useState(false);
     const inputRef: any = useRef(null);
 
@@ -163,5 +163,3 @@ const SearchBar = () => {
         </div>
     );
 };
-
-export default SearchBar;

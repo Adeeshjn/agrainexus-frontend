@@ -76,7 +76,7 @@ const styles: any = {
     },
 };
 
-const Register = () => {
+export default function Register () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -278,5 +278,3 @@ const Register = () => {
         </ThemeProvider>
     );
 };
-
-export default Register;

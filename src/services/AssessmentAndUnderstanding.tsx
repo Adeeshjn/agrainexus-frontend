@@ -22,6 +22,7 @@ import GrassIcon from '@mui/icons-material/Grass';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import {
     API_URLS,
+    DNF,
     frontEndUrl
 } from "../constants/static";
 import postApi from "../api/PostApi";
@@ -151,7 +152,7 @@ export default function AssessmentAndUnderstanding() {
                 location: farmData.location,
                 crops: farmData.crops.join(','),
                 Area: farmData.areaValue.toString(),
-                areaUnit: farmData.areaUnits,
+                areaUnits: farmData.areaUnits,
                 userId: decodedToken.Id
             };
             const body = {
@@ -184,7 +185,10 @@ export default function AssessmentAndUnderstanding() {
     const getFarmDetailsByUserId = async () => {
         try {
             const response: any = await GetApi(`${API_URLS.getFarmDetailsByUserId}`)
-            setRowData(response.data)
+            if(response.status === 200) {
+                setRowData(response.data)
+            }
+            console.log(response)
             setIsLoading(false)
         } catch (error) {
             toast.error("Error while fetching Farm Details", { position: toast.POSITION.TOP_CENTER })
@@ -397,7 +401,7 @@ export default function AssessmentAndUnderstanding() {
             </div>
             <div style={{ padding: '3%' }}>
                 <div style={{ margin: 'auto' }}>
-                    {rowData ? rowData.map((item, index) => (
+                    {!rowData.includes(DNF) ? rowData.map((item, index) => (
                         <Accordion
                             key={index}
                             expanded={click === `panel${index}`}

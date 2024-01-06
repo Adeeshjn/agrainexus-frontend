@@ -1,9 +1,7 @@
-import React from 'react'
 import axios from 'axios'
 import toaster from '../shared/toaster'
-import { useNavigate } from 'react-router';
 
-const GetApi = async (url: string,setLoading?: (loading: boolean) => void) => {
+export default async function GetApi (url: string,setLoading?: (loading: boolean) => void) {
     
     let headersWithAuth = {
         'Content-Type': 'application/json',
@@ -22,9 +20,8 @@ const GetApi = async (url: string,setLoading?: (loading: boolean) => void) => {
         return response
     }
     catch(error) {
-        
         if(axios.isAxiosError(error)) {
-            if(error.response?.status == 401){
+            if(error.response?.status === 401){
                 toaster('Session Expired');
                 localStorage.setItem('token','');
                 window.location.href = '/login'
@@ -42,5 +39,3 @@ const GetApi = async (url: string,setLoading?: (loading: boolean) => void) => {
         setLoading && setLoading(false);
     }
 }
-
-export default GetApi

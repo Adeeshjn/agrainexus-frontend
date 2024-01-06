@@ -2,7 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import toaster from '../shared/toaster'
 
-const putApi = async (body: any,setLoading :(loading:boolean) => void) => {
+export default async function putApi (body: any,setLoading :(loading:boolean) => void) {
     let headersWithAuth = {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -38,5 +38,3 @@ const putApi = async (body: any,setLoading :(loading:boolean) => void) => {
         setLoading(false)
     }
 }
-
-export default putApi

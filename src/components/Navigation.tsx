@@ -6,7 +6,7 @@ import { Logout } from "@mui/icons-material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyIcon from '@mui/icons-material/Key';
 
-const Navigation = () => {
+export default function Navigation() {
 
     const [userName, setUserName] = useState('')
 
@@ -158,5 +158,3 @@ const Navigation = () => {
         </nav>
     );
 };
-
-export default Navigation;

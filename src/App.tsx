@@ -3,16 +3,14 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Login from './auth/Login';
 import Register from './auth/Register';
-import { useEffect, useState } from 'react';
-import JsonData from "./data/data.json";
 import About from './components/About';
-import { Contact } from './components/Contact';
+import Contact from './components/Contact';
 import AgriTechTraining from './services/AgriTechTraining';
-import { Header } from './components/Header';
+import Header from './components/Header';
 import Navigation from './components/Navigation';
-import { Services } from './components/Services';
-import { Team } from './components/Team';
-import { Testimonials } from './components/Testimonials';
+import Services from './components/Services';
+import Team from './components/Team';
+import Testimonials from './components/Testimonials';
 import AssessmentAndUnderstanding from './services/AssessmentAndUnderstanding';
 import GlobalCropDashboard from './services/GlobalCropDashboard';
 import RealTimeExpertAdvisory from './services/RealTimeExpertAdvisory';
@@ -27,18 +25,6 @@ import GlobalAgriSkill from './services/GlobalAgriSkill';
 //     speed: 1000,
 //     speedAsDuration: true,
 // });
-
-interface JsonDataType {
-    About?: any;
-    Header?: any;
-    Gallery?: any;
-    Services?: any;
-    Testimonials?: any;
-    Team?: any;
-    Contact?: any;
-    Features?: any;
-    // Define other properties here if needed
-}
 
 function App() {
     return (
@@ -65,24 +51,19 @@ function App() {
     );
 }
 
-const Home = () => {
-    const [data, setData] = useState<JsonDataType>({});
-    useEffect(() => {
-        setData(JsonData);
-    }, []);
+function Home() {
 
     return (
         <>
             <Navigation />
-            <Header data={data.Header} />
-            <About data={data.About} />
+            <Header />
+            <About />
             <Services />
-            <Team data={data.Team} />
-            <Testimonials data={data.Testimonials} />
-            <Contact data={data.Contact} />
+            <Team />
+            <Testimonials />
+            <Contact />
         </>
     )
 };
-
 
 export default App;

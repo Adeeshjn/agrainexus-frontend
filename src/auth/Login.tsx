@@ -81,7 +81,7 @@ const styles: any = {
     },
 };
 
-const Login = () => {
+export default function Login () {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
@@ -91,7 +91,7 @@ const Login = () => {
 
     useEffect(() => {
         isLogin();
-    }, []);
+    });
 
     const isLogin = () => {
         let token = localStorage.getItem('token');
@@ -230,5 +230,3 @@ const Login = () => {
         </ThemeProvider>
     );
 };
-
-export default Login;
