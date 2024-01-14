@@ -1,6 +1,10 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
 import { ContactDetails } from "../constants/contactDetails";
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MailIcon from '@mui/icons-material/Mail';
+import { FacebookOutlined, Twitter, YouTube } from "@mui/icons-material";
 
 const initialState = {
     name: "",
@@ -96,11 +100,11 @@ export default function Contact () {
                         </div>
                     </div>
                     <div className="col-md-3 col-md-offset-1 contact-info">
+                    <h3>Contact Info</h3>
                         <div className="contact-item">
-                            <h3>Contact Info</h3>
                             <p>
                                 <span>
-                                    <i className="fa fa-map-marker"></i> Address
+                                    <LocationOnIcon fontSize="medium"/> Address
                                 </span>
                                 {ContactDetails.address}
                             </p>
@@ -108,7 +112,7 @@ export default function Contact () {
                         <div className="contact-item">
                             <p>
                                 <span>
-                                    <i className="fa fa-phone"></i> Phone
+                                    <LocalPhoneIcon/> Phone
                                 </span>{" "}
                                 {ContactDetails.phone}
                             </p>
@@ -116,7 +120,7 @@ export default function Contact () {
                         <div className="contact-item">
                             <p>
                                 <span>
-                                    <i className="fa fa-envelope-o"></i> Email
+                                    <MailIcon/> Email
                                 </span>{" "}
                                 {ContactDetails.email}
                             </p>
@@ -128,17 +132,17 @@ export default function Contact () {
                                 <ul>
                                     <li>
                                         <a href={ContactDetails.facebook}>
-                                            <i className="fa fa-facebook"></i>
+                                            <FacebookOutlined style={{color: 'white', fontSize:'50px'}}/>
                                         </a>
                                     </li>
                                     <li>
                                         <a href={ContactDetails.twitter}>
-                                            <i className="fa fa-twitter"></i>
+                                            <Twitter style={{color: 'white', fontSize:'50px'}}/>
                                         </a>
                                     </li>
                                     <li>
                                         <a href={ContactDetails.youtube}>
-                                            <i className="fa fa-youtube"></i>
+                                            <YouTube style={{color: 'white', fontSize:'50px'}}/>
                                         </a>
                                     </li>
                                 </ul>

@@ -26,7 +26,7 @@ import {
     frontEndUrl
 } from "../constants/static";
 import postApi from "../api/PostApi";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import GetApi from "../api/GetApi";
 import GoogleMapComponent from "../components/GoogleMapComponent";
@@ -261,8 +261,8 @@ export default function AssessmentAndUnderstanding() {
     // };
 
     return (
-        <> 
-            <div style={containerStyle}> {isLoading && <Loader/>}
+        <> <ToastContainer/>
+            <div style={containerStyle}> {isLoading && <Loader/>} 
                 <a href={frontEndUrl} style={{ color: "black" }}>
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>

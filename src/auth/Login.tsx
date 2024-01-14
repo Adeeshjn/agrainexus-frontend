@@ -19,7 +19,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
 import { API_URLS } from '../constants/static';
 import postApi from '../api/PostApi';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import React from 'react';
 
 const customTheme: any = createTheme({
@@ -134,8 +134,11 @@ export default function Login () {
                         navigate('/')
                     }
                 } catch (error: any) {
-                    toast.error(error, {
-                        position: toast.POSITION.TOP_CENTER
+                    toast.error("Invalid Username or Password", {
+                        position: toast.POSITION.TOP_CENTER,
+                        style: {
+                            fontSize: '16px'
+                        }
                     });
                 }
             }
@@ -150,7 +153,7 @@ export default function Login () {
 
     return (
         <ThemeProvider theme={customTheme}>
-            <div style={styles.root}>
+            <div style={styles.root}><ToastContainer/>
                 {/* <img
                     src={LoginImage} // Replace with the actual path to your image file
                     alt="LoginImage"

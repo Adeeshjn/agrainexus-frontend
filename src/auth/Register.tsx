@@ -19,7 +19,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
 import { API_URLS } from '../constants/static';
 import postApi from '../api/PostApi';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const customTheme: any = createTheme({
     palette: {
@@ -126,15 +126,21 @@ export default function Register () {
                     let response: any = await postApi(body, setIsLoading)
                     if(response.data) {
                         toast.success("Registration successfull!", { 
-                            position: toast.POSITION.TOP_CENTER 
+                            position: toast.POSITION.TOP_CENTER,
+                            style: {
+                                fontSize: '16px'
+                            }
                         })
                         setTimeout(() => {
                             navigate("/login");
                           }, 5000);
                     }
                 } catch (error: any) {
-                    toast.error(error, {
-                        position: toast.POSITION.TOP_CENTER
+                    toast.error("Registration Failed", {
+                        position: toast.POSITION.TOP_CENTER,
+                        style: {
+                            fontSize: '16px'
+                        }
                     });
                 } finally {
                     setIsLoading(false)
@@ -152,8 +158,7 @@ export default function Register () {
 
     return (
         <ThemeProvider theme={customTheme}>
-            {/* <ToastContainer/> */}
-            <div style={styles.root}>
+            <div style={styles.root}><ToastContainer/>
                 {/* <img
                     src={LoginImage} // Replace with the actual path to your image file
                     alt="LoginImage"
