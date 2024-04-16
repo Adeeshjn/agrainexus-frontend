@@ -5,6 +5,7 @@ export const DNF = 'Data Not Found'
 export const API_URLS = {
     register: `${API_BASE_URL}User/Register`,
     login: `${API_BASE_URL}User/Login`,
+    AddUpdatefarm: `${API_BASE_URL}Farm/`,
     addFarm: `${API_BASE_URL}Farm/AddFarm`,
     getFarmDetailsByUserId: `${API_BASE_URL}Farm/GetFarmDetailsByUserId`
 }

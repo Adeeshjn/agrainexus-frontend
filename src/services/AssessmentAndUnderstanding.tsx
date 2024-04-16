@@ -29,7 +29,7 @@ import postApi from "../api/PostApi";
 import { ToastContainer, toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 import GetApi from "../api/GetApi";
-import GoogleMapComponent from "../components/GoogleMapComponent";
+// import GoogleMapComponent from "../components/GoogleMapComponent";
 import jsPDF from 'jspdf'
 import 'jspdf-autotable';
 import CloseIcon from '@mui/icons-material/Close';
@@ -71,6 +71,7 @@ const buttonStyle = {
 const areaUnits = ["acres", "hectares", "square meters", "square feet", "square kilometers"];
 
 export default function AssessmentAndUnderstanding() {
+
     const [isLoading, setIsLoading] = useState(false);
     const formRef: any = useRef(null);
     const [rowData, setRowData] = useState<any[]>([]);
@@ -86,6 +87,8 @@ export default function AssessmentAndUnderstanding() {
         userId: 0
     });
     const [isAddFarmOpen, setIsAddFarmOpen] = useState(false)
+    const [isUpdateFarmOpen, setIsUpdateFarmOpen] = useState(false)
+    const [isDeleteFarmOpen, setIsDeleteFarmOpen] = useState(false)
 
     const accordionStyle = {
         backgroundColor: 'green', // Set your desired background color
@@ -185,7 +188,7 @@ export default function AssessmentAndUnderstanding() {
     const getFarmDetailsByUserId = async () => {
         try {
             const response: any = await GetApi(`${API_URLS.getFarmDetailsByUserId}`)
-            if(response.status === 200) {
+            if (response.status === 200) {
                 setRowData(response.data)
             }
             console.log(response)
@@ -212,11 +215,38 @@ export default function AssessmentAndUnderstanding() {
 
     const handleUpdateFarmOpen = (item: any) => {
         // Implement update functionality
+        setFarmData({
+            nickName: farmData.nickName,
+            location: farmData.location,
+            crops: farmData.crops,
+            areaValue: farmData.areaValue,
+            areaUnits: farmData.areaUnits,
+            userId: farmData.userId
+        })
+        setIsUpdateFarmOpen(true)
     };
+
+
+    const handleUpdateFarmClose = (item: any) => {
+        setIsUpdateFarmOpen(false)
+    }
+
+    const handleUpdateFarm = async (e: React.FormEvent) => {
+
+    }
 
     const handleDeleteFarmOpen = (item: any) => {
         // Implement delete functionality
+        setIsDeleteFarmOpen(true)
     };
+
+    const handleDeleteFarmClose = (item: any) => {
+        setIsDeleteFarmOpen(false)
+    }
+
+    const handleDeleteFarm = async (e: any) => {
+
+    }
 
     const handleAssessFarm = async (item: any) => {
         try {
@@ -261,8 +291,9 @@ export default function AssessmentAndUnderstanding() {
     // };
 
     return (
-        <> <ToastContainer/>
-            <div style={containerStyle}> {isLoading && <Loader/>} 
+        <>
+            <ToastContainer />
+            <div style={containerStyle}> {isLoading && <Loader />}
                 <a href={frontEndUrl} style={{ color: "black" }}>
                     <ArrowCircleLeftOutlinedIcon style={{ marginTop: "10px", marginLeft: "20px" }} fontSize="large" />
                 </a>
@@ -279,7 +310,7 @@ export default function AssessmentAndUnderstanding() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <div>
-                                        <GoogleMapComponent />
+                                        {/* <GoogleMapComponent /> */}
                                     </div>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -449,9 +480,162 @@ export default function AssessmentAndUnderstanding() {
                                 </div>
                             </AccordionDetails>
                         </Accordion>
-                    )): 'No data'}
+                    )) : 'No data'}
                 </div>
             </div>
+
+            <Dialog open={isUpdateFarmOpen} onClose={() => handleUpdateFarmClose(false)} maxWidth="md" fullWidth scroll="body">
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px', marginRight: '10px' }}>
+                    <Button variant='contained' color="error" size='small' onClick={() => handleUpdateFarmClose(false)}><CloseIcon /></Button>
+                </div>
+                <DialogContent>
+                    <Container maxWidth="lg">
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <div>
+                                    {/* <GoogleMapComponent /> */}
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper elevation={3} style={formContainerStyle}>
+                                    <Typography variant="h5" align="center" style={{ marginBottom: '5px' }}>
+                                        Farm Information
+                                    </Typography>
+                                    <form ref={formRef} onSubmit={handleUpdateFarm}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    fullWidth
+                                                    id="nickName-of-farm"
+                                                    label="Nick Name of Farm"
+                                                    placeholder="Nick Name of Farm"
+                                                    variant="outlined"
+                                                    value={farmData.nickName}
+                                                    onChange={(e) => setFarmData({ ...farmData, nickName: e.target.value })}
+                                                    required
+                                                    InputProps={{
+                                                        style: {
+                                                            fontSize: '16px',
+                                                        },
+                                                        endAdornment: <AbcIcon />,
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    fullWidth
+                                                    id="location-of-farm"
+                                                    label="Location of Farm"
+                                                    placeholder="Location of Farm"
+                                                    variant="outlined"
+                                                    value={farmData.location}
+                                                    onChange={(e) => setFarmData({ ...farmData, location: e.target.value })}
+                                                    required
+                                                    InputProps={{
+                                                        style: {
+                                                            fontSize: '16px',
+                                                        },
+                                                        endAdornment: <AddLocationIcon />,
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    fullWidth
+                                                    id="crops-grown"
+                                                    label="Crops Grown in the Farm"
+                                                    placeholder="Enter 1 crop per line"
+                                                    multiline
+                                                    variant="outlined"
+                                                    value={farmData.crops.join('\n')}
+                                                    onChange={(e) => setFarmData({ ...farmData, crops: e.target.value.split('\n').map(line => line.trim()) })}
+                                                    required
+                                                    InputProps={{
+                                                        style: {
+                                                            fontSize: '16px',
+                                                        },
+                                                        endAdornment: <GrassIcon />,
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <TextField
+                                                    fullWidth
+                                                    id="area-value"
+                                                    label="Area Value"
+                                                    placeholder="Area Value"
+                                                    variant="outlined"
+                                                    type="number"
+                                                    value={farmData.areaValue}
+                                                    onChange={handleAreaValueChange}
+                                                    InputProps={{
+                                                        style: {
+                                                            fontSize: '16px',
+                                                        },
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Select
+                                                    fullWidth
+                                                    id="area-unit"
+                                                    label="Area Unit"
+                                                    placeholder="Area Units"
+                                                    variant="outlined"
+                                                    value={farmData.areaUnits}
+                                                    onChange={handleAreaUnitChange}
+                                                    style={{ fontSize: '16px' }}
+                                                >
+                                                    {areaUnits.map((unit) => (
+                                                        <MenuItem key={unit} value={unit}>
+                                                            {unit}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    fullWidth
+                                                    style={buttonStyle}
+                                                    type="submit"
+                                                >
+                                                    Update Farm
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </form>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Container>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDeleteFarmOpen} onClose={() => handleDeleteFarmClose(false)} maxWidth="xs" fullWidth scroll='body'>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px', marginRight: '10px' }}>
+                    <Button variant='contained' color="error" size='small' onClick={() => handleDeleteFarmClose(false)}><CloseIcon /></Button>
+                </div>
+                <DialogContent>
+                    <Container maxWidth="lg">
+                        <Grid container spacing={2}>
+                            <Typography variant="body1">Are you sure? Do you want to delete the farm with Nick Name: {farmData.nickName} ?</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '5px' }}>
+                                <Button variant='contained' color='error' size='small' onClick={() => handleDeleteFarmClose(false)}>
+                                    No
+                                </Button>
+                                <Button style={{marginLeft: '5px'}} variant='contained' color='primary' size='small' onClick={() => handleDeleteFarmClose(true)}>
+                                    Yes
+                                </Button>
+                            </div>
+                        </Grid>
+
+                    </Container>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

@@ -1,69 +1,53 @@
-import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { Place } from '@mui/icons-material';
-import { renderToString } from 'react-dom/server';
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-export default function MapComponent () {
-    const [position, setPosition] = useState<[number, number] | null>(null);
-    const [address, setAddress] = useState('');
+const GoogleMapSearch = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [location, setLocation] = useState({ lat: 0, lng: 0 });
+    const [map, setMap] = useState(null);
 
-    const handleSelect = async (value: string) => {
-        try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${value}`);
-            const data = await response.json();
+    const handleSearch = () => {
+        if (!searchTerm) return;
 
-            if (data.length > 0) {
-                const { lat, lon } = data[0];
-                setPosition([parseFloat(lat), parseFloat(lon)]);
-                setAddress(value);
+        // Use a geocoding service to get the location based on the search term
+        const geocoder = new window.google.maps.Geocoder();
+
+        geocoder.geocode({ address: searchTerm }, (results, status) => {
+            if (status === 'OK' && results && results.length > 0) {
+                const { lat, lng } = results[0].geometry.location;
+                setLocation({ lat: lat(), lng: lng() });
+            } else {
+                console.error('Error fetching location:', status);
             }
-        } catch (error) {
-            console.error('Error fetching location:', error);
-        }
+        });
     };
 
-    const SetLocationMarker = () => {
-        const map = useMapEvents({
-            click: (e) => {
-                setPosition([e.latlng.lat, e.latlng.lng]);
-            },
-        });
-
-        const customIcon = L.divIcon({
-            className: 'MuiIcon',
-            html: renderToString(<Place style={{ fontSize: 32, color: 'green' }} />),
-        });
-
-        if (position) {
-            return (
-                <Marker position={position} icon={customIcon}>
-                    {address && <Popup>{address}</Popup>}
-                </Marker>
-            );
-        }
-
-        return null;
+    const onLoad = (map: any) => {
+        setMap(map);
     };
 
     return (
         <div>
             <input
                 type="text"
-                placeholder="Search for places"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Search location"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button onClick={() => handleSelect(address)}>Search</button>
+            <button onClick={handleSearch}>Search</button>
 
-            <MapContainer center={[0, 0]} zoom={2} style={{ height: '400px', width: '100%' }}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <SetLocationMarker />
-            </MapContainer>
+            <LoadScript googleMapsApiKey="AIzaSyA3L14rPXjG0XSrsaOnlDeIWXCu9FHtuTw">
+                <GoogleMap
+                    mapContainerStyle={{ height: '400px', width: '100%' }}
+                    center={location}
+                    zoom={12}
+                    onLoad={onLoad}
+                >
+                    <Marker position={location} />
+                </GoogleMap>
+            </LoadScript>
         </div>
     );
 };
+
+export default GoogleMapSearch;
