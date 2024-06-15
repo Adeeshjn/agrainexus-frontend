@@ -5,10 +5,14 @@ import jwtDecode from 'jwt-decode';
 import { Logout } from "@mui/icons-material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyIcon from '@mui/icons-material/Key';
+import { API_URLS } from "../constants/static";
+import postApi from "../api/PostApi";
 
 export default function Navigation() {
 
     const [userName, setUserName] = useState('')
+    const [isLoading, setIsLoading] = useState(false);
+    const [sessionId, setSessionId] = useState(localStorage.getItem('sessionId'));
 
     useEffect(() => {
         getUserName();
@@ -28,8 +32,10 @@ export default function Navigation() {
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.setItem('token', '');
+        localStorage.setItem('sessionId','');
+        await sessionLogout();
         window.location.reload();
     };
 
@@ -41,6 +47,26 @@ export default function Navigation() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const sessionLogout = async () => {
+        let item = { sessionId: sessionId }
+        let body = {
+            Url: API_URLS.logoutSession,
+            body: item,
+            isAuth: true
+        };
+
+        try {
+            let response: any = await postApi(body, setIsLoading);
+            if(response.data) {
+                console.log("Logout Session API call successful", response.data);
+                
+            }
+        } catch (error : any) {
+            console.log("Logout Session API call failed", error);
+            
+        }
+    }
 
     return (
         <nav id="menu" className="navbar navbar-default navbar-fixed-top">

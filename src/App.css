@@ -36,3 +36,58 @@
     transform: rotate(360deg);
   }
 }
+.custom-calendar {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 800px; /* Set a wider max-width */
+  margin: auto;
+}
+
+.teams-calendar {
+  width: 100%;
+  border: none;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation__label {
+  font-weight: bold;
+}
+
+.react-calendar__navigation__arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #0977f5; /* Teams blue color */
+}
+
+.react-calendar__navigation__arrow:hover {
+  color: #1d0ace; /* Darker shade of Teams blue color */
+}
+
+.react-calendar__month-view__days__day {
+  padding: 8px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #868686; /* Color for days from neighboring months */
+}
+
+.react-calendar__tile--active {
+  background-color: #edf5fc; /* Background color for active day */
+}
+
+.react-calendar__tile--hover {
+  background-color: #e5f1fd; /* Background color on hover */
+}
+
+div .css-l5wks9-MuiPaper-root {
+  color: white
+}

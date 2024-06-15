@@ -21,6 +21,7 @@ import { API_URLS } from '../constants/static';
 import postApi from '../api/PostApi';
 import { ToastContainer, toast } from 'react-toastify';
 import React from 'react';
+import GetApi from '../api/GetApi';
 
 const customTheme: any = createTheme({
     palette: {
@@ -86,6 +87,8 @@ export default function Login () {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [sessionId, setSessionId] = useState('');
+    const [loginTime, setLoginTime] = useState('');
     const formRef: any = useRef(null);
     const navigate = useNavigate();
 
@@ -96,7 +99,7 @@ export default function Login () {
     const isLogin = () => {
         let token = localStorage.getItem('token');
         if (token) {
-            navigate('/');
+            navigate('/' + sessionId);
         }
     }
 
@@ -114,10 +117,10 @@ export default function Login () {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+    
         if (formRef.current) {
             const isFormValid = formRef.current.checkValidity();
-
+    
             if (isFormValid) {
                 let item = { userName: userName, password: password };
                 let body = {
@@ -125,13 +128,34 @@ export default function Login () {
                     body: item,
                     isAuth: false
                 };
-
+    
                 try {
                     let response: any = await postApi(body, setIsLoading);
-
-                    if (response.data) {
+    
+                    if (response.status === 200 && response.data) {
                         localStorage.setItem('token', response.data.token);
-                        navigate('/')
+                        // Assuming loginSessionApiCall is defined elsewhere
+                        await loginSessionApiCall();
+                        const sessionId = await getSessionIdByUserName();
+    
+                        if (sessionId) {
+                            localStorage.setItem('sessionId', sessionId);
+                            navigate('/' + sessionId);
+                        } else {
+                            toast.error("Failed to retrieve session ID", {
+                                position: toast.POSITION.TOP_CENTER,
+                                style: {
+                                    fontSize: '16px'
+                                }
+                            });
+                        }
+                    } else {
+                        toast.error("Login failed", {
+                            position: toast.POSITION.TOP_CENTER,
+                            style: {
+                                fontSize: '16px'
+                            }
+                        });
                     }
                 } catch (error: any) {
                     toast.error("Invalid Username or Password", {
@@ -141,6 +165,10 @@ export default function Login () {
                         }
                     });
                 }
+            } else {
+                toast.error("Enter correct details", {
+                    position: toast.POSITION.TOP_CENTER
+                });
             }
         } else {
             toast.error("Enter correct details", {
@@ -148,6 +176,41 @@ export default function Login () {
             });
         }
     };
+
+    const loginSessionApiCall = async () => {
+        let item = { userName: userName }
+        let body = {
+            Url: API_URLS.createLoginSession,
+            body: item,
+            isAuth: true
+        };
+
+        try {
+            let response: any = await postApi(body, setIsLoading);
+            if(response.data) {
+                console.log("Login Session API call successful", response.data);
+            }
+        } catch(error: any) {
+            console.log("Login Session API call failed", error);
+        }
+    }
+
+    const getSessionIdByUserName = async (): Promise<string | undefined> => {
+        try {
+            let response: any = await GetApi(`${API_URLS.getSessionIdByUserName}`);
+            if (response.status === 200) {
+                return response.data; // Assuming response.data is the session ID
+            } else {
+                console.log(`Error: Unexpected response status ${response.status}`);
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+        return undefined;
+    }
+    
 
     const isFormValid = userName && password
 

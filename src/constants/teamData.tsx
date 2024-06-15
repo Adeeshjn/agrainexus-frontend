@@ -1,5 +1,5 @@
 import TeamMember1 from '../images/team/01.jpg'
-import TeamMember2 from '../images/team/02.jpg'
+import TeamMember2 from '../images/team/Me.png'
 import TeamMember3 from '../images/team/03.jpg'
 import TeamMember4 from '../images/team/04.jpg'
 
@@ -11,8 +11,8 @@ export const TeamData = [
     },
     {
         "img": TeamMember2,
-        "name": "Mike Doe",
-        "job": "Senior Designer"
+        "name": "Chaitanya N K",
+        "job": "Software Developer"
     },
     {
         "img": TeamMember3,

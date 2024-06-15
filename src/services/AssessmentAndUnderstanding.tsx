@@ -244,9 +244,9 @@ export default function AssessmentAndUnderstanding() {
         setIsDeleteFarmOpen(false)
     }
 
-    const handleDeleteFarm = async (e: any) => {
+    // const handleDeleteFarm = async (e: any) => {
 
-    }
+    // }
 
     const handleAssessFarm = async (item: any) => {
         try {
